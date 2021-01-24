@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using System.ComponentModel;
 using System.Reflection;
 using Terraria;
 using Terraria.ModLoader;
@@ -10,37 +11,6 @@ namespace HappinessRemoval
 {
     public class HappinessRemoval : Mod
     {
-        public enum HappinessType
-        {
-            Unhappy,
-            Dislikes,
-            Neutral,
-            Likes,
-            Happy
-        }
-
-        public static double GetPriceAdjustment(HappinessType happinessType)
-        {
-            switch (happinessType)
-            {
-                case HappinessType.Unhappy:
-                    return 1.2;
-
-                case HappinessType.Dislikes:
-                    return 1.1;
-
-                case HappinessType.Neutral:
-                default:
-                    return 1.0;
-
-                case HappinessType.Likes:
-                    return 0.9;
-
-                case HappinessType.Happy:
-                    return 0.8;
-            }
-        }
-
         public override void Load()
         {
             IL.Terraria.Main.DrawNPCChatButtons += Main_DrawNPCChatButtons;
@@ -126,17 +96,11 @@ namespace HappinessRemoval
         public override ConfigScope Mode => ConfigScope.ServerSide;
 
         [Header("Happiness")]
-        [Label("NPC Happiness Level")]
-        [Tooltip("All NPCs will share the same level of happiness!" +
-            "\nPrice modifications depending on happiness type:" +
-            "\nUnhappy: 120% modifier" +
-            "\nDislikes: 110% modifier" +
-            "\nNeutral: 100% modifier (no change)" +
-            "\nLikes: 90% modifier" +
-            "\nHappy: 80% modifier (Pylon!)")]
+        [Label("NPC Happiness Level (Lower = Better)")]
         [Slider]
-        [DrawTicks]
-        public HappinessRemoval.HappinessType npcHappiness;
+        [DefaultValue(0.75f)]
+        [Range(0.5f, 2f)]
+        public float npcHappiness;
 
         public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref string message)
         {
@@ -153,7 +117,7 @@ namespace HappinessRemoval
     {
         public override void PreUpdate()
         {
-            Player.currentShoppingSettings.PriceAdjustment = HappinessRemoval.GetPriceAdjustment(ModContent.GetInstance<HappinessConfig>().npcHappiness);
+            Player.currentShoppingSettings.PriceAdjustment = ModContent.GetInstance<HappinessConfig>().npcHappiness;
 
             if (Main.npcChatFocus4)
             {
