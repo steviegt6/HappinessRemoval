@@ -153,7 +153,7 @@ namespace HappinessRemoval
     {
         public override void PreUpdate()
         {
-            player.currentShoppingSettings.PriceAdjustment = HappinessRemoval.GetPriceAdjustment(ModContent.GetInstance<HappinessConfig>().npcHappiness);
+            Player.currentShoppingSettings.PriceAdjustment = HappinessRemoval.GetPriceAdjustment(ModContent.GetInstance<HappinessConfig>().npcHappiness);
 
             if (Main.npcChatFocus4)
             {
