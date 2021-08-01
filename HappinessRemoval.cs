@@ -4,10 +4,11 @@ using System.ComponentModel;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
+using TomatoLib;
 
 namespace HappinessRemoval
 {
-    public class HappinessRemoval : Mod
+    public class HappinessRemoval : TomatoMod
     {
         public override void Load()
         {
@@ -19,11 +20,16 @@ namespace HappinessRemoval
             IL.Terraria.Main.DrawNPCChatButtons -= Main_DrawNPCChatButtons;
         }
 
-        private static void Main_DrawNPCChatButtons(ILContext il)
+        private void Main_DrawNPCChatButtons(ILContext il)
         {
             ILCursor c = new(il);
 
-            c.GotoNext(MoveType.After, x => x.MatchLdstr("UI.NPCCheckHappiness"));
+            if (!c.TryGotoNext(MoveType.After, x => x.MatchLdstr("UI.NPCCheckHappiness")))
+            {
+                ModLogger.PatchFailure("Terraria.Main", "DrawNPCChatButtons", "ldstr", "UI.NPCCheckHappiness");
+                return;
+            }
+
             c.Emit(OpCodes.Pop);
             c.Emit(OpCodes.Ldstr, string.Empty);
         }

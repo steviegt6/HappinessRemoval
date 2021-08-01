@@ -1,1 +1,7 @@
 NPC Happiness Removal removes the NPC happiness system in exchange for a mod config.
+
+v1.0.0.1:
+- IL exception logging + depends on TomatoLib.
+
+v1.0.0.0:
+- Initial release.
