@@ -1,5 +1,3 @@
 displayName = NPC Happiness Removal
 author = Tomat
 version = 1.0.0.1
-modReferences = TomatoLib
-sortAfter = TomatoLib

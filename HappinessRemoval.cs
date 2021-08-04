@@ -1,37 +1,60 @@
+using System;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System.ComponentModel;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
-using TomatoLib;
 
 namespace HappinessRemoval
 {
-    public class HappinessRemoval : TomatoMod
+    public class HappinessRemoval : Mod
     {
         public override void Load()
         {
-            IL.Terraria.Main.DrawNPCChatButtons += Main_DrawNPCChatButtons;
+            IL.Terraria.Main.DrawNPCChatButtons += PatchOutButton;
+            IL.Terraria.Chest.SetupShop += OverridePylonConditions;
         }
 
         public override void Unload()
         {
-            IL.Terraria.Main.DrawNPCChatButtons -= Main_DrawNPCChatButtons;
+            IL.Terraria.Main.DrawNPCChatButtons -= PatchOutButton;
+            IL.Terraria.Chest.SetupShop -= OverridePylonConditions;
         }
 
-        private void Main_DrawNPCChatButtons(ILContext il)
+        private void PatchOutButton(ILContext il)
         {
             ILCursor c = new(il);
 
             if (!c.TryGotoNext(MoveType.After, x => x.MatchLdstr("UI.NPCCheckHappiness")))
             {
-                ModLogger.PatchFailure("Terraria.Main", "DrawNPCChatButtons", "ldstr", "UI.NPCCheckHappiness");
+                Logger.Error("Patch failure: at Terraria.Main::DrawNPCChatButtons->UI.NPCCheckHappiness (ldstr)");
                 return;
             }
 
             c.Emit(OpCodes.Pop);
             c.Emit(OpCodes.Ldstr, string.Empty);
+        }
+
+        private void OverridePylonConditions(ILContext il)
+        {
+            ILCursor c = new(il);
+
+            if (!c.TryGotoNext(MoveType.After, x => x.MatchStloc(0)))
+            {
+                Logger.Error("Patch failure: at Terraria.Chest::SetupShop->0 (stloc)");
+                return;
+            }
+
+            c.EmitDelegate<Func<bool>>(() =>
+            {
+                if (ModContent.GetInstance<HappinessConfig>().OverridePylon)
+                    return true;
+
+                return Main.LocalPlayer.currentShoppingSettings.PriceAdjustment <= 0.85000002384185791; // incredibly stupid number
+            });
+
+            c.Emit(OpCodes.Stloc_0); // flag
         }
     }
 
@@ -46,6 +69,11 @@ namespace HappinessRemoval
         [DefaultValue(0.75f)]
         [Range(0.5f, 2f)]
         public float NpcHappiness;
+
+        [Label("Override Pylon Happiness")]
+        [Tooltip("Forces an NPC to sell a pylon regardless of happiness if true.")]
+        [DefaultValue(true)]
+        public bool OverridePylon;
 
         public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref string message)
         {
