@@ -8,6 +8,17 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="TomatoLib\**" />
+    <EmbeddedResource Remove="TomatoLib\**" />
+    <None Remove="TomatoLib\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="lib\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="TomatoLib\TomatoLib.csproj" />
   </ItemGroup>
 </Project>
