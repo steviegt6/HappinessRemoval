@@ -1,6 +1,6 @@
 displayName = NPC Happiness Removal
 author = Tomat
-version = 1.0.4
+version = 1.0.5
 modReferences = TomatoLib
 sortAfter = TomatoLib
 buildIgnore = .git/*, .vs/*, bin/*, obj/*, TomatoLib/*, workshop.json
