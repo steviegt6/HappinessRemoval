@@ -1,7 +1,6 @@
-displayName = NPC Happiness Removal
+displayName = Happiness Configuration
 author = Tomat
-version = 1.0.5.1
-modReferences = TomatoLib
-sortAfter = TomatoLib
-buildIgnore = .git/*, .vs/*, bin/*, obj/*, TomatoLib/*, workshop.json
-homepage = https://discord.gg/Y8bvvqyFQw
+version = 2.1.0
+modReferences = TeaFramework
+sortAfter = TeaFramework
+homepage = https://discord.gg/tomat

@@ -1,11 +1,3 @@
-NPC Happiness Removal removes the NPC happiness system in exchange for a mod config.
+This mod uses Tea Framework, which must be installed and enabled to properly use this mod.
 
-v1.0.0.2:
-- Fixed detour unloading, better IL logging.
-- TomatoLib dependency.
-
-v1.0.0.1:
-- IL exception logging + configurable pylon overriding.
-
-v1.0.0.0:
-- Initial release.
+Happiness Configuration (originally NPC Happiness Removal) allows you to toggle whether or not NPC happiness should function in-game, and lets you manually set how happy/sad NPCs are. It also lets you toggle whether pylons should be made available to sell at all times.

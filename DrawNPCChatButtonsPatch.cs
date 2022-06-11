@@ -2,8 +2,10 @@
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using TeaFramework.Features.Patching;
-using TeaFramework.Features.Utility;
+using TeaFramework.Utilities;
+using TeaFramework.Utilities.Extensions;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace HappinessRemoval
 {
@@ -11,17 +13,21 @@ namespace HappinessRemoval
     {
         public override MethodInfo ModifiedMethod { get; } = typeof(Main).GetCachedMethod("DrawNPCChatButtons");
 
-        protected override ILContext.Manipulator PatchMethod { get; } = il =>
-        {
-            ILCursor c = new(il);
+        protected override ILContext.Manipulator PatchMethod =>
+            il =>
+            {
+                ILCursor c = new(il);
 
-            if (!c.TryGotoNext(MoveType.After, x => x.MatchLdstr("UI.NPCCheckHappiness"))) {
-                ModLogger.PatchFailure("Terraria.Main", "DrawNPCChatButtons", "ldstr", "UI.NPCCheckHappiness");
-                return;
-            }
+                if (!c.TryGotoNext(MoveType.After, x => x.MatchLdstr("UI.NPCCheckHappiness"))) {
+                    this.LogOpCodeJumpFailure("Terraria.Main", "DrawNPCChatButtons", "ldstr", "\"UI.NPCCheckHappiness\"");
+                    return;
+                }
 
-            c.Emit(OpCodes.Pop);
-            c.Emit(OpCodes.Ldstr, string.Empty);
-        };
+                //c.Emit(OpCodes.Pop);
+                //c.Emit(OpCodes.Ldstr, string.Empty);
+                c.EmitDelegate((string text) => {
+                    return ModContent.GetInstance<HappinessConfig>().ToggleHappiness ? text : "";
+                });
+            };
     }
 }

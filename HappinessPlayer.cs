@@ -7,6 +7,8 @@ namespace HappinessRemoval
     {
         public override void PreUpdate()
         {
+            if (ModContent.GetInstance<HappinessConfig>().ToggleHappiness) return;
+
             Player.currentShoppingSettings.PriceAdjustment = ModContent.GetInstance<HappinessConfig>().NpcHappiness;
 
             if (!Main.npcChatFocus4)
