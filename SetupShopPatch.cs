@@ -24,7 +24,7 @@ namespace HappinessRemoval
                 }
 
                 c.EmitDelegate((bool flag) => flag || ModContent.GetInstance<HappinessConfig>().OverridePylon);
-                c.Emit(OpCodes.Stloc_0); // flag
+                // c.Emit(OpCodes.Stloc_0); // flag
             };
     }
 }
