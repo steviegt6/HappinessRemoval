@@ -18,18 +18,12 @@ namespace HappinessRemoval
             {
                 ILCursor c = new(il);
 
-                if (!c.TryGotoNext(MoveType.After, x => x.MatchStloc(0))) {
+                if (!c.TryGotoNext(x => x.MatchStloc(0))) {
                     this.LogOpCodeJumpFailure("Terraria.Chest", "SetupShop", "stloc", "0");
                     return;
                 }
 
-                c.EmitDelegate(() =>
-                {
-                    if (ModContent.GetInstance<HappinessConfig>().OverridePylon) return true;
-
-                    return Main.LocalPlayer.currentShoppingSettings.PriceAdjustment <= 0.85000002384185791; // incredibly stupid number
-                });
-
+                c.EmitDelegate((bool flag) => flag || ModContent.GetInstance<HappinessConfig>().OverridePylon);
                 c.Emit(OpCodes.Stloc_0); // flag
             };
     }

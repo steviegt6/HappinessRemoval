@@ -25,9 +25,7 @@ namespace HappinessRemoval
 
                 //c.Emit(OpCodes.Pop);
                 //c.Emit(OpCodes.Ldstr, string.Empty);
-                c.EmitDelegate((string text) => {
-                    return ModContent.GetInstance<HappinessConfig>().ToggleHappiness ? text : "";
-                });
+                c.EmitDelegate((string text) => ModContent.GetInstance<HappinessConfig>().ToggleHappiness ? text : "");
             };
     }
 }
